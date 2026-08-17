@@ -108,8 +108,24 @@
 .labs-page .exp h3{font-family:var(--display);font-size:clamp(1.6rem,2.6vw,2.3rem);line-height:1;margin-bottom:.7rem}
 .labs-page .exp .yr{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;color:var(--mist-dark);margin-bottom:.9rem}
 .labs-page .exp .desc{color:var(--mist);font-size:.96rem;line-height:1.55;flex:1}
-.labs-page .exp .cta{margin-top:1.4rem;display:inline-flex;align-items:center;gap:.5em;font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--aura);align-self:flex-start;border-bottom:1px solid transparent;padding-bottom:2px;transition:border-color .3s,gap .3s var(--ease)}
-.labs-page .exp .cta:hover{border-color:var(--aura);gap:.75em}
+.labs-page .exp .cta,.labs-page .exp-detail .cta{margin-top:1.4rem;display:inline-flex;align-items:center;gap:.5em;font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--aura);align-self:flex-start;border-bottom:1px solid transparent;padding-bottom:2px;transition:border-color .3s,gap .3s var(--ease)}
+.labs-page .exp .cta:hover,.labs-page .exp-detail .cta:hover{border-color:var(--aura);gap:.75em}
+
+/* experiment detail / article */
+.labs-page .wrap-narrow{max-width:760px}
+.labs-page .exp-back{display:inline-flex;align-items:center;font-family:var(--mono);font-size:.76rem;color:var(--mist);margin-bottom:2.2rem;transition:color .3s}
+.labs-page .exp-back:hover{color:var(--aura)}
+.labs-page .exp-detail-top{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1.4rem}
+.labs-page .exp-detail h1{font-family:var(--display);font-size:clamp(2.2rem,5vw,3.6rem);line-height:1.02;margin-bottom:.8rem}
+.labs-page .exp-detail .yr{margin-bottom:1.6rem}
+.labs-page .exp-detail-desc{color:var(--mist);font-size:1.08rem;line-height:1.6;max-width:60ch;margin-bottom:2rem}
+.labs-page .exp-blocks{display:flex;flex-direction:column;gap:1.6rem;border-top:1px solid var(--line);padding-top:2rem}
+.labs-page .exp-block-text{color:rgba(243,241,248,.78);font-size:1.02rem;line-height:1.65;max-width:64ch;white-space:pre-line}
+.labs-page .exp-block-image{border-radius:16px;overflow:hidden;border:1px solid var(--line)}
+.labs-page .exp-block-image img{width:100%;display:block}
+.labs-page .exp-block-image figcaption{padding:.9rem 1.1rem;font-family:var(--mono);font-size:.72rem;color:var(--mist);border-top:1px solid var(--line)}
+.labs-page .exp-block-file,.labs-page .exp-block-link{display:inline-flex;align-items:center;gap:.6em;align-self:flex-start;font-size:.95rem;color:var(--aura);border-bottom:1px solid rgba(220,207,255,.3);padding-bottom:2px;transition:border-color .3s}
+.labs-page .exp-block-file:hover,.labs-page .exp-block-link:hover{border-color:var(--aura)}
 /* status badge */
 .labs-page .status{display:inline-flex;align-items:center;gap:.5em;font-family:var(--mono);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;padding:.4em .8em;border-radius:100px;border:1px solid var(--line-2);white-space:nowrap}
 .labs-page .status .dot{width:7px;height:7px;border-radius:50%;background:var(--mist)}

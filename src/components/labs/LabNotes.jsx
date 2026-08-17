@@ -1,7 +1,9 @@
-import { notes } from '../../data/notes.js'
+import { notes as notesFallback } from '../../data/notes.js'
+import useContentSection from '../../hooks/useContentSection.js'
 import LabNoteCard from './LabNoteCard.jsx'
 
 export default function LabNotes() {
+  const [notes] = useContentSection('notes', notesFallback)
   return (
     <section id="notes" className="section-pad">
       <div className="wrap">

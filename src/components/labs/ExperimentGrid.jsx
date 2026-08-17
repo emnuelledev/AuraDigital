@@ -1,7 +1,9 @@
-import { experiments } from '../../data/experiments.js'
+import { experiments as experimentsFallback } from '../../data/experiments.js'
+import useContentSection from '../../hooks/useContentSection.js'
 import ExperimentCard from './ExperimentCard.jsx'
 
 export default function ExperimentGrid() {
+  const [experiments] = useContentSection('experiments', experimentsFallback)
   return (
     <section id="experiments" className="section-pad">
       <div className="wrap">

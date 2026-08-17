@@ -30,6 +30,7 @@ This README documents the codebase — architecture, design system, local setup 
 - [Tech stack](#-tech-stack)
 - [Getting started](#-getting-started)
 - [The Discovery Call system](#-the-discovery-call-system)
+- [The Manager area](#-the-manager-area)
 - [Environment variables](#-environment-variables)
 - [Deployment](#-deployment)
 - [Project structure](#-project-structure)
@@ -64,8 +65,9 @@ Every piece of copy, pricing figure and link lives in [`src/data/site.js`](src/d
 - **[React 18](https://react.dev)** + **[Vite 5](https://vitejs.dev)** — no framework ceremony, just fast DX
 - **[React Router 6](https://reactrouter.com)** — client-side routing between the studio and Labs
 - **Vanilla CSS** with design tokens (`src/styles/global.css`) — no CSS framework, every rule is intentional
-- **[Vercel Serverless Functions](https://vercel.com/docs/functions)** (`/api`) — the only "backend", zero servers to manage
+- **[Vercel Serverless Functions](https://vercel.com/docs/functions)** (`/api`) — the only custom backend code, zero servers to manage
 - **[Resend](https://resend.com)** — transactional email for Discovery Call submissions
+- **[Supabase](https://supabase.com)** (Postgres + Auth) — powers the Manager area and stores Discovery Call submissions
 - Zero UI/animation libraries — reveal-on-scroll, the custom cursor, the aura glow and the before/after slider are all hand-rolled
 
 <br />
@@ -101,6 +103,68 @@ Intro → About you → Your business → The project → Timeline & budget → 
 
 <br />
 
+## ✦ The Manager area
+
+`/manager` is a password-protected area for editing the site's content and browsing Discovery Call submissions — no code changes or redeploys needed. It's a thin layer on top of **Supabase**: Supabase Auth handles login, Row Level Security decides who can write, and the browser talks to Supabase directly (`@supabase/supabase-js`) rather than through a custom API.
+
+**What's editable**: Services, Pricing, Selected Work, Testimonials (including each person's photo), FAQ, and the Labs archive. Every Labs experiment card now links to its own article page (`/labs/:id`) — the Manager lets you build that page out of text, images, downloadable files (PDFs, etc.) and links, in any order. Long-form prose (hero, about, philosophy, founder bio, footer) is intentionally left static — it changes rarely and doesn't fit a list/form editor cleanly.
+
+**How it reaches the public site**: each public section (`Services.jsx`, `Pricing.jsx`, etc.) reads its content with [`useContentSection`](src/hooks/useContentSection.js), which fetches from the `site_content` table and falls back to the static `src/data/*.js` export if Supabase is unreachable or a section has never been saved yet. That static export also acts as the seed — the first time a Manager editor opens a section with no row yet, the form is pre-filled from it, and hitting **Save** creates the row.
+
+### One-time setup
+
+1. Create a free project at [supabase.com](https://supabase.com).
+2. **SQL Editor** → run:
+
+   ```sql
+   create table site_content (
+     section text primary key,
+     data jsonb not null,
+     updated_at timestamptz not null default now()
+   );
+
+   create table discovery_submissions (
+     id uuid primary key default gen_random_uuid(),
+     created_at timestamptz not null default now(),
+     name text, email text, business text, location text, website text,
+     description text, stage text, stage_other text, audience text,
+     services jsonb, services_other text, goal text, materials text,
+     timeline text, budget text, notes text
+   );
+
+   alter table site_content enable row level security;
+   alter table discovery_submissions enable row level security;
+
+   create policy "public read" on site_content for select using (true);
+   create policy "auth write" on site_content for all
+     using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
+   create policy "auth read submissions" on discovery_submissions for select
+     using (auth.role() = 'authenticated');
+   -- discovery_submissions has no insert policy for anon/authenticated —
+   -- rows are only ever written by api/discovery.js using the service role
+   -- key, which bypasses RLS entirely.
+
+   -- Storage bucket for testimonial photos and Labs article images/files.
+   insert into storage.buckets (id, name, public)
+   values ('media', 'media', true)
+   on conflict (id) do nothing;
+
+   create policy "public read media" on storage.objects for select
+     using (bucket_id = 'media');
+   create policy "auth upload media" on storage.objects for insert
+     with check (bucket_id = 'media' and auth.role() = 'authenticated');
+   create policy "auth update media" on storage.objects for update
+     using (bucket_id = 'media' and auth.role() = 'authenticated');
+   create policy "auth delete media" on storage.objects for delete
+     using (bucket_id = 'media' and auth.role() = 'authenticated');
+   ```
+
+3. **Authentication → Users** → add one user (your email + a password you choose). That's the only Manager login.
+4. **Settings → API** → copy the Project URL, the `anon`/publishable key, and the `service_role`/secret key.
+5. Set the three Supabase env vars below in Vercel (and `.env.local` locally), then sign in at `/manager/login`.
+
+<br />
+
 ## ✦ Environment variables
 
 Copy [`.env.example`](.env.example) to `.env.local` for local `vercel dev`, and set the same keys in the Vercel project's **Settings → Environment Variables**.
@@ -110,6 +174,9 @@ Copy [`.env.example`](.env.example) to `.env.local` for local `vercel dev`, and 
 | `RESEND_API_KEY` | ✦ | API key from [resend.com/api-keys](https://resend.com/api-keys) |
 | `TO_EMAIL` | ✦ | Inbox that receives Discovery Call submissions |
 | `FROM_EMAIL` | — | Sender address. Defaults to Resend's shared test sender; point it at a verified domain once you have one |
+| `VITE_SUPABASE_URL` | ✦ | Project URL from Supabase → Settings → API. Bundled into the client — that's expected |
+| `VITE_SUPABASE_ANON_KEY` | ✦ | Anon/publishable key from the same page. Also public by design; RLS is the actual gate |
+| `SUPABASE_SERVICE_ROLE_KEY` | ✦ | Secret. Server-only, used by `api/discovery.js` to store submissions. Never prefix with `VITE_` |
 
 <br />
 
@@ -129,7 +196,7 @@ The site is built for **Vercel** — the static build and the `/api` function de
 
 ```
 ├── api/
-│   └── discovery.js            # Serverless function → Resend
+│   └── discovery.js            # Serverless function → Resend + Supabase insert
 ├── public/
 │   ├── favicon.svg              # Sparkle mark (primary favicon)
 │   └── favicon.png              # Full wordmark (apple-touch-icon)
@@ -139,12 +206,14 @@ The site is built for **Vercel** — the static build and the `/api` function de
 │   │   ├── home/                # One component per homepage section
 │   │   ├── labs/                # The Labs satellite site
 │   │   ├── discovery/           # The Discovery Call experience
+│   │   ├── manager/              # /manager section editors (one per content type)
 │   │   └── shared/               # Header, footer, cursor, loader, rich text
-│   ├── context/                  # DiscoveryCallContext
-│   ├── data/                     # site.js + discovery.js — all copy & config
-│   ├── hooks/                     # useReveal, useSmoothScroll
-│   ├── pages/                     # Home.jsx, Labs.jsx
-│   ├── styles/                    # global.css, labs.css, discovery.css
+│   ├── context/                  # DiscoveryCallContext, ManagerAuthContext
+│   ├── data/                     # site.js + discovery.js — copy & seed/fallback content
+│   ├── hooks/                     # useReveal, useSmoothScroll, useContentSection
+│   ├── lib/                       # supabase.js — the browser Supabase client
+│   ├── pages/                     # Home.jsx, Labs.jsx, Manager.jsx
+│   ├── styles/                    # global.css, labs.css, discovery.css, manager.css
 │   └── utils/                     # links.js — external-link handling
 ├── vercel.json
 └── .env.example

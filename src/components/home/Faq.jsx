@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react'
-import { faq } from '../../data/site.js'
+import { faq as faqFallback } from '../../data/site.js'
+import useContentSection from '../../hooks/useContentSection.js'
 
 function FaqItem({ item, open, onToggle }) {
   const panel = useRef(null)
@@ -18,6 +19,7 @@ function FaqItem({ item, open, onToggle }) {
 }
 
 export default function Faq() {
+  const [faq] = useContentSection('faq', faqFallback)
   const [openIdx, setOpenIdx] = useState(-1)
   return (
     <section id="faq" className="section-pad">

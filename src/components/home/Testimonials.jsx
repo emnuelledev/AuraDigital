@@ -1,5 +1,6 @@
 import RichText from '../shared/RichText.jsx'
-import { testimonials } from '../../data/site.js'
+import { testimonials as testimonialsFallback } from '../../data/site.js'
+import useContentSection from '../../hooks/useContentSection.js'
 import lucileneAvatar from '../../assets/testimonial-lucilene.jpg'
 import sarahAvatar from '../../assets/testimonial-sarah.jpg'
 import sweetBronzeAvatar from '../../assets/testimonial-sweetbronze.png'
@@ -16,6 +17,7 @@ const avatarPosition = {
 }
 
 export default function Testimonials() {
+  const [testimonials] = useContentSection('testimonials', testimonialsFallback)
   return (
     <section className="section-pad">
       <div className="wrap">
@@ -30,13 +32,13 @@ export default function Testimonials() {
               <RichText as="blockquote" html={q.quote} />
               <div className="who">
                 <span className="av">
-                  {avatars[q.name] && (
+                  {(q.avatar || avatars[q.name]) && (
                     <img
-                      src={avatars[q.name]}
+                      src={q.avatar || avatars[q.name]}
                       alt={q.name}
                       loading="lazy"
                       decoding="async"
-                      style={{ objectPosition: avatarPosition[q.name] || 'center' }}
+                      style={{ objectPosition: (!q.avatar && avatarPosition[q.name]) || 'center' }}
                     />
                   )}
                 </span>

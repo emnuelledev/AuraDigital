@@ -1,6 +1,8 @@
-import { pricing } from '../../data/site.js'
+import { pricing as pricingFallback } from '../../data/site.js'
+import useContentSection from '../../hooks/useContentSection.js'
 
 export default function Pricing({ cur, setCur }) {
+  const [pricing] = useContentSection('pricing', pricingFallback)
   const sym = cur === 'usd' ? '$' : '\u20ac'
   return (
     <section id="pricing" className="section-pad">
