@@ -252,7 +252,7 @@ export const founder = {
   ],
   chips: ['Founder & Digital Strategist', 'Software Engineer', 'AI Implementation Specialist', 'Creative Technologist', 'Digital Transformation Enthusiast'],
   links: {
-    linkedin: 'https://www.linkedin.com/in/emanuelle-soares-54b661382/',
+    linkedin: 'https://www.linkedin.com/company/aura-digital-spectrum/',
     github: 'https://github.com/emnuelledev',
   },
 }
@@ -288,7 +288,7 @@ export const contact = {
   head: 'Let&apos;s build something<br/>worth <em>remembering.</em>',
   sub: 'Tell us where your brand is headed. We&apos;ll bring the strategy, the craft and the aura.',
   channels: [
-    { label: 'Linkedin', href: 'https://www.linkedin.com/in/emanuelle-soares-54b661382/' },
+    { label: 'Linkedin', href: 'https://www.linkedin.com/company/aura-digital-spectrum/' },
     { label: 'Email', href: 'mailto:emma.auradigital@gmail.com' },
     { label: 'Facebook', href: 'https://www.facebook.com/profile.php?id=61592869186651' },
   ],
