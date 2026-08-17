@@ -107,7 +107,7 @@ Intro → About you → Your business → The project → Timeline & budget → 
 
 `/manager` is a password-protected area for editing the site's content and browsing Discovery Call submissions — no code changes or redeploys needed. It's a thin layer on top of **Supabase**: Supabase Auth handles login, Row Level Security decides who can write, and the browser talks to Supabase directly (`@supabase/supabase-js`) rather than through a custom API.
 
-**What's editable**: Services, Pricing, Selected Work, Testimonials, FAQ, and the Labs archive (Experiments + Lab Notes). Long-form prose (hero, about, philosophy, founder bio, footer) is intentionally left static — it changes rarely and doesn't fit a list/form editor cleanly.
+**What's editable**: Services, Pricing, Selected Work, Testimonials (including each person's photo), FAQ, and the Labs archive. Every Labs experiment card now links to its own article page (`/labs/:id`) — the Manager lets you build that page out of text, images, downloadable files (PDFs, etc.) and links, in any order. Long-form prose (hero, about, philosophy, founder bio, footer) is intentionally left static — it changes rarely and doesn't fit a list/form editor cleanly.
 
 **How it reaches the public site**: each public section (`Services.jsx`, `Pricing.jsx`, etc.) reads its content with [`useContentSection`](src/hooks/useContentSection.js), which fetches from the `site_content` table and falls back to the static `src/data/*.js` export if Supabase is unreachable or a section has never been saved yet. That static export also acts as the seed — the first time a Manager editor opens a section with no row yet, the form is pre-filled from it, and hitting **Save** creates the row.
 
@@ -143,6 +143,20 @@ Intro → About you → Your business → The project → Timeline & budget → 
    -- discovery_submissions has no insert policy for anon/authenticated —
    -- rows are only ever written by api/discovery.js using the service role
    -- key, which bypasses RLS entirely.
+
+   -- Storage bucket for testimonial photos and Labs article images/files.
+   insert into storage.buckets (id, name, public)
+   values ('media', 'media', true)
+   on conflict (id) do nothing;
+
+   create policy "public read media" on storage.objects for select
+     using (bucket_id = 'media');
+   create policy "auth upload media" on storage.objects for insert
+     with check (bucket_id = 'media' and auth.role() = 'authenticated');
+   create policy "auth update media" on storage.objects for update
+     using (bucket_id = 'media' and auth.role() = 'authenticated');
+   create policy "auth delete media" on storage.objects for delete
+     using (bucket_id = 'media' and auth.role() = 'authenticated');
    ```
 
 3. **Authentication → Users** → add one user (your email + a password you choose). That's the only Manager login.

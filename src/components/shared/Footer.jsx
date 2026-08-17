@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { footer } from '../../data/site.js'
 import { externalProps } from '../../utils/links.js'
 
@@ -20,6 +21,7 @@ export default function Footer() {
         <div className="foot-bottom">
           <span>{footer.bottom.left}</span>
           <span>{footer.bottom.mid}</span>
+          <Link to="/manager" className="to-top" data-cursor>Manager</Link>
           <a href="#top" className="to-top" data-cursor>Back to top &#8593;</a>
         </div>
       </div>

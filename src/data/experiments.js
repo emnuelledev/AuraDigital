@@ -6,18 +6,21 @@ export const experiments = [
     disciplines: ['Applied AI', 'Business Tools'],
     status: 'Prototype', freq: 'iris', cta: 'View experiment', link: '#',
     desc: 'A lightweight business management environment exploring how AI can become useful infrastructure for small businesses — instead of an unnecessary layer of complexity.',
+    content: [],
   },
   {
     id: '002', title: 'AI Value Research', year: '2026',
     disciplines: ['Research', 'Artificial Intelligence'],
     status: 'Ongoing', freq: 'cyan', cta: 'Open research', link: '#',
     desc: 'Mapping the boundary between what AI can do and where it creates sustainable business value — separating genuine leverage from noise.',
+    content: [],
   },
   {
     id: '003', title: 'AI-assisted QA', year: '2026',
     disciplines: ['Software', 'Quality Assurance'],
     status: 'Exploring', freq: 'violet', cta: 'Follow along', link: '#',
     desc: 'Testing how far AI can support software testing — drafting cases, reading logs, triaging bugs — and, just as usefully, where it quietly gets things wrong.',
+    content: [],
   },
   {
     id: '004', title: '— currently forming', year: '',

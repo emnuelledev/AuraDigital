@@ -32,13 +32,13 @@ export default function Testimonials() {
               <RichText as="blockquote" html={q.quote} />
               <div className="who">
                 <span className="av">
-                  {avatars[q.name] && (
+                  {(q.avatar || avatars[q.name]) && (
                     <img
-                      src={avatars[q.name]}
+                      src={q.avatar || avatars[q.name]}
                       alt={q.name}
                       loading="lazy"
                       decoding="async"
-                      style={{ objectPosition: avatarPosition[q.name] || 'center' }}
+                      style={{ objectPosition: (!q.avatar && avatarPosition[q.name]) || 'center' }}
                     />
                   )}
                 </span>

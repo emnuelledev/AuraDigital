@@ -1,8 +1,48 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase.js'
+import { uploadMedia } from '../../lib/uploadMedia.js'
+
+function ImageField({ f, value, onChange }) {
+  const id = 'f-' + f.key
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState(null)
+
+  const pick = async (e) => {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    setBusy(true)
+    setError(null)
+    try {
+      const url = await uploadMedia(file, f.folder || 'images')
+      onChange(url)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="dc-field">
+      <label className="dc-label" htmlFor={id}>{f.label}</label>
+      <div className="mgr-image-field">
+        {value ? <img className="mgr-image-preview" src={value} alt="" /> : <div className="mgr-image-preview empty">No photo yet</div>}
+        <div>
+          <input id={id} type="file" accept="image/*" onChange={pick} disabled={busy} />
+          {value && <button type="button" className="mgr-btn danger" style={{ marginTop: '.6rem' }} onClick={() => onChange('')}>Remove photo</button>}
+        </div>
+      </div>
+      {busy && <p className="mgr-status">Uploading…</p>}
+      {error && <p className="dc-error" role="alert">{error}</p>}
+      <p className="dc-helper" style={{ marginTop: '.5rem', marginBottom: 0 }}>{f.helper}</p>
+    </div>
+  )
+}
 
 function Field({ f, value, onChange }) {
   const id = 'f-' + f.key
+  if (f.type === 'image') return <ImageField f={f} value={value} onChange={onChange} />
   if (f.type === 'checkbox') {
     return (
       <label className="dc-field" htmlFor={id} style={{ display: 'flex', alignItems: 'center', gap: '.6em' }}>
