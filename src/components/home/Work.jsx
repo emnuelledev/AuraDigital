@@ -1,6 +1,7 @@
 import BeforeAfter from './BeforeAfter.jsx'
 import sweetBronze from '../../assets/sweet-bronze.jpg'
-import { work } from '../../data/site.js'
+import { work as workFallback } from '../../data/site.js'
+import useContentSection from '../../hooks/useContentSection.js'
 
 function CaseMeta({ c }) {
   return (
@@ -20,6 +21,7 @@ function CaseMeta({ c }) {
 }
 
 export default function Work() {
+  const [work] = useContentSection('work', workFallback)
   return (
     <section id="work" className="section-pad">
       <div className="wrap">

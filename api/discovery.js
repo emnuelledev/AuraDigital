@@ -1,6 +1,23 @@
-// Vercel serverless function — receives a Discovery Call submission and
-// emails it to the studio via Resend. Secrets (RESEND_API_KEY, TO_EMAIL)
-// live only in the deployment's environment, never in client code.
+// Vercel serverless function — receives a Discovery Call submission,
+// stores it in Supabase and emails it to the studio via Resend. Secrets
+// (RESEND_API_KEY, TO_EMAIL, SUPABASE_SERVICE_ROLE_KEY) live only in the
+// deployment's environment, never in client code.
+
+import { createClient } from '@supabase/supabase-js'
+
+async function saveSubmission(d) {
+  const url = process.env.VITE_SUPABASE_URL
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!url || !serviceKey) return // Supabase not configured — email still goes out below.
+  const supabase = createClient(url, serviceKey)
+  const { error } = await supabase.from('discovery_submissions').insert({
+    name: d.name, email: d.email, business: d.business, location: d.location, website: d.website,
+    description: d.description, stage: d.stage, stage_other: d.stageOther, audience: d.audience,
+    services: d.services, services_other: d.servicesOther, goal: d.goal, materials: d.materials,
+    timeline: d.timeline, budget: d.budget, notes: d.notes,
+  })
+  if (error) console.error('Discovery Call: Supabase insert failed', error.message)
+}
 
 const REQUIRED = ['name', 'email', 'description', 'stage', 'goal', 'timeline']
 
@@ -100,6 +117,8 @@ export default async function handler(req, res) {
 
   const subjectName = (body.business && body.business.trim()) || body.name
   const subject = `New Discovery — ${subjectName}`
+
+  await saveSubmission(body).catch((err) => console.error('Discovery Call: Supabase insert threw', err))
 
   try {
     const r = await fetch('https://api.resend.com/emails', {

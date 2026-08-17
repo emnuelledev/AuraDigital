@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { services } from '../../data/site.js'
+import { services as servicesFallback } from '../../data/site.js'
+import useContentSection from '../../hooks/useContentSection.js'
 import ServiceModal from './ServiceModal.jsx'
 
 export default function Services() {
+  const [services] = useContentSection('services', servicesFallback)
   const [openIdx, setOpenIdx] = useState(null)
   return (
     <section id="services" className="section-pad">
