@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./src/assets/logo.png" alt="Aura Digital" width="220" />
+<img src="src/assets/logo.png" alt="Aura Digital" width="220" />
 
 ### Digital transformation · AI · Creative technology
 
