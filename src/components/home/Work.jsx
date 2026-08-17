@@ -12,7 +12,7 @@ function CaseMeta({ c }) {
       <div className="case-stats">
         {c.stats.map((s) => <div className="st" key={s.l}><div className="stn">{s.n}</div><div className="stl">{s.l}</div></div>)}
       </div>
-      {c.kind === 'live' && (
+      {c.url && (
         <a className="case-live mono" href={c.url} target="_blank" rel="noopener noreferrer">{c.liveLabel} <span className="arw">&#8599;</span></a>
       )}
     </div>
@@ -41,7 +41,7 @@ export default function Work() {
               )}
               {c.kind === 'ba' && <BeforeAfter data={c} />}
               {c.kind === 'mock' && (
-                <div className="mock mock-b" data-cursor>
+                <div className={'mock mock-' + (c.mkTheme || 'b')} data-cursor>
                   <span className="mk-star" style={{ bottom: '16%', left: '14%' }}>&#10022;</span>
                   <div className="mock-inner">
                     <span className="mk-eyebrow">{c.mkEyebrow}</span>
