@@ -214,9 +214,9 @@ export const testimonials = {
   eyebrow: 'In their words',
   head: 'The kind of studio you tell people about.',
   items: [
-    { wide: true, quote: 'Aura didn&apos;t just make us look better — they made us understand what we were actually selling. The website is the first thing clients now mention.', name: 'Marta Ferr\u00e1n', role: 'Founder, Ferr\u00e1n Interiors' },
-    { quote: 'Every detail felt intentional. It finally looks like the company we&apos;re trying to become.', name: 'Luca Benedetti', role: 'CEO, Ledger & Co.' },
-    { quote: 'Bookings went up within the first month. Worth every euro, and then some.', name: 'Dr. Elena Ruiz', role: 'Director, Novacare Clinic' },
+    { wide: true, quote: 'I loved the work and the care that went into every detail. From the website to the e-book, everything was thoughtfully developed, and I&apos;m very happy with what we&apos;ve created together. I&apos;m looking forward to continuing with our future projects.', name: 'Lucilene Ferraz', role: 'Lawyer, Previdenciary Law' },
+    { quote: 'It turned out absolutely beautiful. You can really see how much care and dedication went into everything, and it came at exactly the right moment. I&apos;m incredibly grateful for the work and attention to detail.', name: 'Sarah Victoria', role: 'Nutritionist, Metamorfose Method' },
+    { quote: 'I&apos;m very happy with the final project. The work was handled with great care and professionalism, and the result really represents Sweet Bronze and what we wanted for the business.', name: 'Dayane B.', role: 'Manager, Sweet Bronze' },
   ],
 }
 

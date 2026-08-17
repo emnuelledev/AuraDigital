@@ -342,7 +342,8 @@ body.ready .scroll-cue{transition:opacity 1s 1s var(--ease);opacity:1}
 .quote .mark{font-family:var(--display);font-size:4rem;line-height:.5;color:var(--iris);height:1.5rem}
 .quote blockquote{font-family:var(--display);font-size:clamp(1.3rem,2.2vw,1.85rem);line-height:1.3;margin:1.5rem 0 auto}
 .quote .who{display:flex;align-items:center;gap:1rem;margin-top:2.2rem;padding-top:1.6rem;border-top:1px solid var(--line)}
-.quote .av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--aura),var(--iris));flex-shrink:0}
+.quote .av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--aura),var(--iris));flex-shrink:0;overflow:hidden}
+.quote .av img{width:100%;height:100%;object-fit:cover;display:block}
 .quote .wn{font-weight:500;font-size:.95rem}
 .quote .wr{color:var(--mist-dark);font-size:.82rem;font-family:var(--mono);letter-spacing:.03em}
 .quote.wide{grid-column:span 2}

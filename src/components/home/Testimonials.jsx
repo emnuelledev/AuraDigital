@@ -1,5 +1,19 @@
 import RichText from '../shared/RichText.jsx'
 import { testimonials } from '../../data/site.js'
+import lucileneAvatar from '../../assets/testimonial-lucilene.jpg'
+import sarahAvatar from '../../assets/testimonial-sarah.jpg'
+import sweetBronzeAvatar from '../../assets/testimonial-sweetbronze.png'
+
+const avatars = {
+  'Lucilene Ferraz': lucileneAvatar,
+  'Sarah Victoria': sarahAvatar,
+  'Dayane B.': sweetBronzeAvatar,
+}
+
+// Per-photo crop focus for the circular avatar (defaults to centered).
+const avatarPosition = {
+  'Lucilene Ferraz': 'center 12%',
+}
 
 export default function Testimonials() {
   return (
@@ -15,7 +29,17 @@ export default function Testimonials() {
               <span className="mark">&ldquo;</span>
               <RichText as="blockquote" html={q.quote} />
               <div className="who">
-                <span className="av"></span>
+                <span className="av">
+                  {avatars[q.name] && (
+                    <img
+                      src={avatars[q.name]}
+                      alt={q.name}
+                      loading="lazy"
+                      decoding="async"
+                      style={{ objectPosition: avatarPosition[q.name] || 'center' }}
+                    />
+                  )}
+                </span>
                 <div><div className="wn">{q.name}</div><div className="wr">{q.role}</div></div>
               </div>
             </blockquote>
